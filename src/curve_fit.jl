@@ -153,7 +153,11 @@ function estimate_covar(fit::LsqFitResult)
         Rinv = inv(R)
         covar = Rinv*Rinv'*mse
     else
-        covar = inv(J'*J)
+        r = fit.resid
+        # mean square error is: standard sum square error / degrees of freedom
+        mse = sum(abs2, r) / dof(fit)
+
+        covar = inv(J'*J) * mse
     end
 
     return covar
